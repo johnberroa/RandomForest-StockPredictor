@@ -1,6 +1,5 @@
 import pandas
 
-
 #input: best would be 14 rows of data. Less ok, more unnecessary
 def stochastic_oscillator(trData):
     #cut pandas frame after 14 rows
