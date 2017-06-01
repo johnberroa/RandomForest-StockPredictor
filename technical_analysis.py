@@ -54,10 +54,14 @@ def PROC(dataframe, period):
 
 def SO(dataframe):
     '''
+    STOCHASTIC OSCIALLTOR
+    Calculates fancy shit for late usage. Nice!
+
     EXAMPLE USAGE:
     data = pandas.read_csv("./data/ALL.csv", sep=",",header=0,quotechar='"')
     so = SO(data)
     print(so)
+
     '''
     so = []
     for i in range(len(dataframe)):
