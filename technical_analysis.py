@@ -74,12 +74,58 @@ def SO(dataframe):
             l14 = dataframe.iloc[0:i]["<CLOSE>"].min()
         so.append(100 * (C - l14) / (h14 - l14))
 
-    #Implement real places of the values
     return so
 
+def Williams_R(dataframe):
+    '''
+    Williams %R
+    Calculates fancy shit for late usage. Nice!
 
-# print(RSI([1,2,3,4,5,4,3,2,1], 2))
-# print(RSI([1.00,2.00,3.00,4.00,5.00,4.00,3.00,2.00,1.00,1.00,2.00,3.00,
-#      4.00,5.00,4.00,3.00,2.00,1.00,1.00,2.00,3.00,4.00,5.00,4.00,
-#      3.00,2.00,1.00,2.00,3.00,4.00,5.00,4.00], 14))
+    EXAMPLE USAGE:
+    data = pandas.read_csv("./data/ALL.csv", sep=",",header=0,quotechar='"')
+    wr = Williams_R(data)
+    print(wr)
 
+    '''
+    wr = []
+    for i in range(len(dataframe)):
+        C = dataframe.iloc[i]["<CLOSE>"]
+        if(i > 13):
+            h14 = dataframe.iloc[i-14:i]["<CLOSE>"].max()
+            l14 = dataframe.iloc[i-14:i]["<CLOSE>"].min()
+        else:
+            h14 = dataframe.iloc[0:i]["<CLOSE>"].max()
+            l14 = dataframe.iloc[0:i]["<CLOSE>"].min()
+        wr.append((h14 - C) / (h14 - l14) * -100)
+
+    return wr
+
+def On_Balance_Volume(dataframe):
+    '''
+    Williams %R
+    Calculates fancy shit for late usage. Nice!
+
+    EXAMPLE USAGE:
+    data = pandas.read_csv("./data/ALL.csv", sep=",",header=0,quotechar='"')
+    wr = Williams_R(data)
+    print(wr)
+
+    '''
+    obv = []
+    obv.append(dataframe.iloc[0]["<VOL>"])
+    for i in range(1,len(dataframe)):
+        C_old = dataframe.iloc[i-1]["<CLOSE>"]
+        C = dataframe.iloc[i]["<CLOSE>"]
+        if(C > C_old):
+            obv.append(obv[i-1]+dataframe.iloc[i]["<VOL>"])
+        elif (C < C_old):
+            obv.append(obv[i - 1] - dataframe.iloc[i]["<VOL>"])
+        else:
+            obv.append(obv[i-1])
+
+    return obv
+
+data = pandas.read_csv("./data/ALL.csv", sep=",",header=0,quotechar='"')
+print(data)
+obv = On_Balance_Volume(data)
+print(obv)
