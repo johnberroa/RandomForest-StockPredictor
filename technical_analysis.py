@@ -1,12 +1,12 @@
 import numpy as np
-import pandas
+import pandas as pd
 
 def RSI(dataframe, period):
     '''
     Computes the RSI of a given price series for a given period length
     :param dataframe:
     :param period:
-    :return rsi:
+    :return dataframe with rsi:
     '''
 
     # TODO:---
@@ -14,24 +14,33 @@ def RSI(dataframe, period):
     #     all_prices = dataframe[symbol].close
     # ---
 
-    diff = np.diff(all_prices) # length is 1 less than the all_prices
-    rsi = [None] * period # because RSI can't be calculated until period prices have occured
+    # dataframe["RSI"] = dataframe.apply(lambda row: RSI)
+    rsi = []
 
-    for i in range(len(diff) - period):
-        avg_gain = diff[i:period + i]
-        avg_loss = diff[i:period + i]
-        avg_gain = abs(sum(avg_gain[avg_gain >= 0]) / period)
-        avg_loss = abs(sum(avg_loss[avg_loss < 0]) / period)
-        if avg_loss == 0:
-            rsi.append(100)
-        elif avg_gain == 0:
-            rsi.append(0)
-        else:
-            rs = avg_gain / avg_loss
-            rsi.append(100 - (100 / (1 + rs)))
+    for stock in dataframe['Symbol'].unique():
+        all_prices = dataframe[dataframe['Symbol'] == stock]['Close']
+        diff = np.diff(all_prices) # length is 1 less than the all_prices
+        rsi.append([None] * period) # because RSI can't be calculated until period prices have occured
 
-    return rsi
+        for i in range(len(diff) - period):
+            avg_gain = diff[i:period + i]
+            avg_loss = diff[i:period + i]
+            avg_gain = abs(sum(avg_gain[avg_gain >= 0]) / period)
+            avg_loss = abs(sum(avg_loss[avg_loss < 0]) / period)
+            if avg_loss == 0:
+                rsi.append(100)
+            elif avg_gain == 0:
+                rsi.append(0)
+            else:
+                rs = avg_gain / avg_loss
+                rsi.append(100 - (100 / (1 + rs)))
 
+    print("FIRST RSI THEN DATAFRAME LENGTH", len(rsi), len(dataframe))
+    dataframe['RSI'] = rsi
+    return dataframe
+data = pd.read_csv('data.csv')
+data = RSI(data, 14)
+print(data.head())
 
 def PROC(dataframe, period):
     '''
@@ -125,7 +134,7 @@ def On_Balance_Volume(dataframe):
 
     return obv
 
-data = pandas.read_csv("./data/ALL.csv", sep=",",header=0,quotechar='"')
+data = pd.read_csv("./data/ALL.csv", sep=",",header=0,quotechar='"')
 print(data)
 obv = On_Balance_Volume(data)
 print(obv)
