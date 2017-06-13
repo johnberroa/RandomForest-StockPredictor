@@ -81,7 +81,7 @@ def SO(dataframe):
         else:
             h14 = dataframe.iloc[0:i]["<CLOSE>"].max()
             l14 = dataframe.iloc[0:i]["<CLOSE>"].min()
-        so.append(100 * (C - l14) / (h14 - l14))
+        so.append(100 * ((C - l14) / (h14 - l14))
 
     return so
 
