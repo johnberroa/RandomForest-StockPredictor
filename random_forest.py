@@ -2,30 +2,31 @@
 A random forest classifier aimed at determining whether a stock will be higher or lower after some given amount of days.
 Replication of Khaidem, Saha, & Roy Dey (2016)
 
-Documentation on functions:
-http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
-http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingClassifier.html
+Documentation on function:
+http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
 """
 
-import numpy as np
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import RandomForestClassifier as make_forest
 
 '''
 ### Outline ###
-We need to create labels defined as Sign(Close at predicted day - Close price some D days before predicted price)
-    Therefore, we will have to drop out the first few days of each stock for the same reason that we had to drop the
-    first few days for the indicators (there won't be enough data to calculate the label)
-When we train the classifier, we input the "Close price some D days before predicted price", and split based on the
-    values of the technical indicators
-We need to create a DecisionTreeClassifier with the gini impurity separator and other parameters that match the paper
-We then create a BaggingClassifier and input the DecisionTreeClassifier as the base_estimator
+We have a bunch of columns of different length target values
+We drop all target values except the ones we want to analyze (or else when we remove NA we will remove too much data)
+We then input the data and features in to the first .fit parameter, and the labels in the second
 '''
+
+num_features = 4
 prediction_window = 30
+full_data = pd.read_csv('data_preprocessed.csv')
 
-decision_tree = DecisionTreeClassifier(criterion='gini', max_depth=None) # max_depth can be controlled if we desire
-# oob_score same as paper, verbose so we know what's going on
-random_forest = BaggingClassifier(base_estimator=decision_tree, bootstrap=True, oob_score=True, verbose=1)
+# drop all target columns not to be analyzed
+headers = full_data.columns.values
+headers = headers[10:] # should return just the headers of the DI-# (target values)
+headers = headers[headers!='DI-'+str(prediction_window)]
+selected_data = full_data.drop(headers, axis=1) # dunno if axis 1 is right
+selected_data = selected_data.dropna(axis=0, how='any') # using the subset parameter might allow us to skip dropping other targets?
 
-random_forest.fit(prices, labels)
+Random_Forest = make_forest(max_features=num_features, bootstrap=True, oob_score=True, verbose=1)
+
+Random_Forest.fit(!!prices&features!!, selected_data['DI-'+str(prediction_window)])
