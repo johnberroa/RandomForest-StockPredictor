@@ -15,7 +15,6 @@ symbols = sorted([x.strip() for x in symbols.split('\n')])
 stock_prices = []
 data = pd.DataFrame()
 
-# TODO: Add date checking to make sure values are aligned along same data range
 
 for symbol in symbols:
     try:
