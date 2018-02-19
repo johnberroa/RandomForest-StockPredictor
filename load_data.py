@@ -15,7 +15,10 @@ symbols = sorted([x.strip() for x in symbols.split('\n')])
 stock_prices = []
 data = pd.DataFrame()
 
+<<<<<<< HEAD
 # TODO: Add date checking to make sure values are aligned along same data range
+=======
+>>>>>>> parent of d499b79... Usage added and cleanup
 
 for symbol in symbols:
     try:
